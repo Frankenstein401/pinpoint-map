@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <canvas id="map"></canvas>
+
+    <!-- Pinpoint untuk map -->
+    <!-- <div class="pin-wrapper" class="hidden">
+         <div class="pinpoint"></div>
+     </div> -->
+
+    <div id="form-panel" class="hidden">
+        <!-- Area Header -->
+        <div class="sb-header">
+            <div class="sb-header-badge">Sistem Geografis</div>
+            <h3>Simpan Titik Lokasi</h3>
+            <p class="subtitle">Klik ganda pada peta telah mendeteksi koordinat global. Berikan identifikasi untuk
+                pinpoint ini.</p>
+        </div>
+
+        <!-- Area Isi Form -->
+        <div class="sb-body">
+            <!-- Manifes Koordinat (Otomatis terisi via JS nanti) -->
+            <div class="sb-geo-card">
+                <div class="sb-geo-item">
+                    <div class="sb-geo-label">Garis Bujur (X)</div>
+                    <div id="display-x" class="sb-geo-value">0.00</div>
+                </div>
+                <div class="sb-geo-item">
+                    <div class="sb-geo-label">Garis Lintang (Y)</div>
+                    <div id="display-y" class="sb-geo-value">0.00</div>
+                </div>
+            </div>
+
+            <form id="location-form">
+                <!-- Input Nama Tempat -->
+                <div class="form-group">
+                    <label for="location-name">Nama Identitas Tempat</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="location-name" placeholder="Misal: Rumah pak Jokowi" required
+                            autocomplete="off">
+                    </div>
+                </div>
+
+                <!-- Hidden Input Data -->
+                <input type="hidden" id="coord-x">
+                <input type="hidden" id="coord-y">
+            </form>
+        </div>
+
+        <!-- Area Tombol Aksi Bawah -->
+        <div class="sb-footer">
+            <div class="btn-group">
+                <button type="button" id="cancel-btn">Batal</button>
+                <button type="submit" form="location-form">Simpan Pinpoint</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+
+</html>

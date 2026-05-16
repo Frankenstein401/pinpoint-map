@@ -1,0 +1,437 @@
+/* ==========================================================================
+   PREMIUM ENTERPRISE SIDEBAR SYSTEM - PRODUCTION READY
+   ========================================================================== */
+
+/* --- 1. DESIGN TOKENS & VARIABLES --- */
+:root {
+    /* Color Palette - Sophisticated Charcoal & Slate */
+    --sb-bg-main: #ffffff;
+    --sb-bg-surface: #f8f9fa;
+    --sb-bg-surface-hover: #f1f3f5;
+    --sb-bg-backdrop: rgba(15, 23, 42, 0.08);
+    
+    /* Brand Colors - Deep Tech Blue & Accents */
+    --sb-color-primary: #0f172a;
+    --sb-color-primary-rgb: 15, 23, 42;
+    --sb-color-accent: #2563eb;
+    --sb-color-accent-hover: #1d4ed8;
+    --sb-color-accent-light: #eff6ff;
+    --sb-color-success: #10b981;
+    --sb-color-danger: #ef4444;
+    
+    /* Typography Colors */
+    --sb-text-main: #1e293b;
+    --sb-text-muted: #64748b;
+    --sb-text-light: #94a3b8;
+    --sb-text-on-accent: #ffffff;
+    
+    /* Borders & Dividers */
+    --sb-border-color: #e2e8f0;
+    --sb-border-color-focus: #3b82f6;
+    
+    /* Geometry & Spacing */
+    --sb-width: 380px;
+    --sb-radius-lg: 16px;
+    --sb-radius-md: 12px;
+    --sb-radius-sm: 8px;
+    
+    /* Shadows - Layered Ambient Occlusion */
+    --sb-shadow-sidebar: 4px 0 32px rgba(15, 23, 42, 0.04), 1px 0 4px rgba(15, 23, 42, 0.02);
+    --sb-shadow-button: 0 4px 12px rgba(37, 99, 235, 0.15);
+    --sb-shadow-input-focus: 0 0 0 4px rgba(59, 130, 246, 0.12);
+    
+    /* Animation Speeds */
+    --sb-transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --sb-transition-normal: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- 2. GLOBAL RESET FOR CANVAS CONTEXT --- */
+html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
+    background-color: #f1f5f9;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+canvas {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1 !important;
+}
+
+/* --- 3. SIDEBAR CORE CONTAINER --- */
+#form-panel {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: var(--sb-width) !important;
+    height: 100vh !important;
+    background-color: var(--sb-bg-main) !important;
+    border-right: 1px solid var(--sb-border-color) !important;
+    box-shadow: var(--sb-shadow-sidebar) !important;
+    z-index: 9999 !important; /* Memastikan mutlak di atas canvas */
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    transition: transform var(--sb-transition-normal) !important;
+    will-change: transform;
+}
+
+/* --- 4. UTILITY TRANSITION STATE --- */
+#form-panel.hidden {
+    transform: translateX(-100%) !important;
+    box-shadow: none !important;
+}
+
+/* --- 5. SIDEBAR HEADER ZONE --- */
+.sb-header {
+    padding: 32px 28px 24px 28px !important;
+    border-bottom: 1px solid var(--sb-border-color) !important;
+    position: relative !important;
+}
+
+.pin-wrapper {
+    position: absolute;
+    top: 5rem;
+    left: 5rem;
+    width: 15px;
+    height: 15px;
+    z-index: 5; /* Berada di atas canvas, tapi di bawah sidebar */
+    transform: translate(-50%, -100%); /* Geser agar ujung ekor pas di titik klik */
+    pointer-events: none; /* Biar gak ngeganggu klik/drag canvas di bawahnya */
+}
+
+/* Bulatan Pin Utama (15px sesuai request) */
+.pinpoint {
+    width: 15px;
+    height: 15px;
+    border-radius: 100px;
+    background-color: red;
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+/* Ekor Lancip di Bawah Bulatan */
+.pinpoint::after {
+    content: '';
+    position: absolute;
+    bottom: -6px; /* Nempel tepat di bawah bulatan */
+    left: 50%;
+    transform: translateX(-50%);
+    
+    /* Trik segitiga CSS untuk bikin ekor lancip */
+    border-width: 7px 4px 0 4px;
+    border-style: solid;
+    border-color: red transparent transparent transparent;
+}
+
+.sb-header-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    background-color: var(--sb-color-accent-light);
+    color: var(--sb-color-accent);
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 20px;
+    margin-bottom: 16px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.sb-header h3 {
+    margin: 0 !important;
+    font-size: 1.4rem !important;
+    font-weight: 700 !important;
+    color: var(--sb-color-primary) !important;
+    letter-spacing: -0.5px !important;
+    line-height: 1.2 !important;
+}
+
+.sb-header .subtitle {
+    margin: 8px 0 0 0 !important;
+    font-size: 0.875rem !important;
+    color: var(--sb-text-muted) !important;
+    line-height: 1.5 !important;
+}
+
+/* --- 6. SIDEBAR CONTENT SCROLLABLE AREA --- */
+.sb-body {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    padding: 28px !important;
+}
+
+/* Smooth Scrollbar for Premium Feel */
+.sb-body::-webkit-scrollbar {
+    width: 6px;
+}
+.sb-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+.sb-body::-webkit-scrollbar-thumb {
+    background: var(--sb-border-color);
+    border-radius: 10px;
+}
+.sb-body::-webkit-scrollbar-thumb:hover {
+    background: var(--sb-text-light);
+}
+
+/* --- 7. COORDINATE DATA DISPLAY (DECORATIVE & FUNCTIONAL) --- */
+.sb-geo-card {
+    background-color: var(--sb-bg-surface);
+    border: 1px solid var(--sb-border-color);
+    border-radius: var(--sb-radius-md);
+    padding: 16px;
+    margin-bottom: 28px;
+    display: flex;
+    gap: 16px;
+}
+
+.sb-geo-item {
+    flex: 1;
+}
+
+.sb-geo-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--sb-text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.sb-geo-value {
+    font-size: 0.9rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-weight: 600;
+    color: var(--sb-text-main);
+}
+
+/* --- 8. FORM CONTROLS & STYLING --- */
+.form-group {
+    margin-bottom: 24px !important;
+    position: relative !important;
+}
+
+.form-group label {
+    display: block !important;
+    font-size: 0.8rem !important;
+    font-weight: 600 !important;
+    color: var(--sb-text-main) !important;
+    margin-bottom: 8px !important;
+    letter-spacing: -0.1px !important;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.form-group input[type="text"] {
+    width: 100% !important;
+    height: 48px !important;
+    padding: 0 16px !important;
+    box-sizing: border-box !important;
+    border: 1.5px solid var(--sb-border-color) !important;
+    border-radius: var(--sb-radius-md) !important;
+    font-size: 0.95rem !important;
+    color: var(--sb-text-main) !important;
+    background-color: var(--sb-bg-main) !important;
+    transition: border-color var(--sb-transition-fast), box-shadow var(--sb-transition-fast) !important;
+    outline: none !important;
+}
+
+/* Input Micro-interactions */
+.form-group input[type="text"]:hover {
+    border-color: var(--sb-text-light) !important;
+}
+
+.form-group input[type="text"]:focus {
+    border-color: var(--sb-border-color-focus) !important;
+    box-shadow: var(--sb-shadow-input-focus) !important;
+    background-color: #ffffff !important;
+}
+
+/* Placeholder Styling */
+.form-group input[type="text"]::placeholder {
+    color: var(--sb-text-light);
+    opacity: 1;
+}
+
+/* --- 9. CATEGORY CHIPS SYSTEM --- */
+.chip-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.category-chip {
+    padding: 8px 14px;
+    background-color: var(--sb-bg-surface);
+    border: 1px solid var(--sb-border-color);
+    border-radius: var(--sb-radius-sm);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--sb-text-main);
+    cursor: pointer;
+    transition: all var(--sb-transition-fast);
+}
+
+.category-chip:hover {
+    background-color: var(--sb-bg-surface-hover);
+    border-color: var(--sb-text-light);
+}
+
+.category-chip.active {
+    background-color: var(--sb-color-primary);
+    border-color: var(--sb-color-primary);
+    color: white;
+}
+
+/* --- 10. FIXED FOOTER & BUTTON ACTIONS --- */
+.sb-footer {
+    padding: 24px 28px 32px 28px !important;
+    border-top: 1px solid var(--sb-border-color) !important;
+    background-color: var(--sb-bg-main) !important;
+}
+
+.btn-group {
+    display: flex !important;
+    gap: 12px !important;
+    width: 100% !important;
+}
+
+button {
+    height: 48px !important;
+    padding: 0 24px !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    border-radius: var(--sb-radius-md) !important;
+    cursor: pointer !important;
+    border: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all var(--sb-transition-fast) !important;
+    box-sizing: border-box !important;
+}
+
+/* Primary Button (Simpan) */
+button[type="submit"] {
+    background-color: var(--sb-color-accent) !important;
+    color: var(--sb-text-on-accent) !important;
+    flex: 2 !important; /* Ukuran tombol aksi utama lebih lebar */
+    box-shadow: var(--sb-shadow-button) !important;
+}
+
+button[type="submit"]:hover {
+    background-color: var(--sb-color-accent-hover) !important;
+    transform: translateY(-1px) !important;
+}
+
+button[type="submit"]:active {
+    transform: translateY(1px) !important;
+    box-shadow: none !important;
+}
+
+/* Secondary Button (Batal) */
+button#cancel-btn {
+    background-color: var(--sb-bg-surface) !important;
+    color: var(--sb-text-main) !important;
+    border: 1px solid var(--sb-border-color) !important;
+    flex: 1 !important;
+}
+
+button#cancel-btn:hover {
+    background-color: var(--sb-bg-surface-hover) !important;
+    border-color: var(--sb-text-light) !important;
+}
+
+/* --- 11. ADVANCED LIST SECTION (COMPLEMENTARY FEATURE) --- */
+.sb-saved-section {
+    margin-top: 12px;
+    border-top: 1px dashed var(--sb-border-color);
+    padding-top: 24px;
+}
+
+.sb-section-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--sb-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+}
+
+.location-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.location-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-radius: var(--sb-radius-sm);
+    cursor: pointer;
+    transition: background var(--sb-transition-fast);
+    margin-bottom: 4px;
+}
+
+.location-item:hover {
+    background-color: var(--sb-bg-surface);
+}
+
+.location-icon {
+    width: 32px;
+    height: 32px;
+    background-color: var(--sb-color-accent-light);
+    border-radius: 50%;
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--sb-color-accent);
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+.location-info {
+    flex: 1;
+}
+
+.location-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--sb-text-main);
+}
+
+.location-meta {
+    font-size: 0.75rem;
+    color: var(--sb-text-muted);
+    margin-top: 2px;
+}
+
+/* --- 12. RESPONSIVE OPTIMIZATION --- */
+@media (max-width: 480px) {
+    :root {
+        --sb-width: 100%;
+    }
+    #form-panel {
+        border-right: none !important;
+    }
+}
