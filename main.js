@@ -77,6 +77,7 @@ canvas.addEventListener('wheel', (e) => {
 
     e.preventDefault();
 
+    // cetak koordinat
     const centerX = e.offsetX;
     const centerY = e.offsetY;
 
